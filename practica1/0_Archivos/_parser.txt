@@ -1,0 +1,47 @@
+import java.io.*;
+import java.lang.*;
+import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.*;
+
+action code{:
+void print(String msj)
+   {System.out.println(msj);}
+:}
+
+parser code {:
+public void syntax_error(Symbol cur_token){
+System.out.println("va a ingresar el error sintactico "+ cur_token.value); 
+interfaz.rotular("va a ingresar el error sintactico "+ cur_token.value);
+}
+public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+interfaz.rotular("errror YA no se recupera"+ s);
+System.out.println("error YA no se recupera"+s);
+}
+public void semantic(Symbol cur_token,String n)
+{
+System.out.println("error semantico ");
+}
+public void semantic(String msg, Object obj) {
+}
+:};
+terminal PUNTOYCOMA, MAS, MENOS, POR, ENTRE, MODULO;
+terminal LPAREN, RPAREN;
+terminal Integer NUMERO;
+non terminal lista_expr;
+non terminal Integer expr;
+precedence left MAS, MENOS;
+precedence left POR, ENTRE, MODULO;
+
+lista_expr ::= lista_expr expr:e PUNTOYCOMA
+{: interfaz.rotular("El resultado es = " + e.toString()); :}
+| lista_expr error PUNTOYCOMA | /* Epsilon */ ;
+expr ::= expr:e1 MAS expr:e2
+{: RESULT= new Integer(e1.intValue()+ e2.intValue()); :}
+| expr:e1 MENOS expr:e2 {: RESULT=new Integer(e1.intValue()-e2.intValue()); :} 
+|  expr:e1 POR expr:e2 {:RESULT=new Integer(e1.intValue() *e2.intValue());:} 
+|  expr:e1 ENTRE expr:e2 {:RESULT=new Integer(e1.intValue() /e2.intValue()); :}
+|  expr:e1 MODULO expr:e2 {: RESULT=new Integer(e1.intValue() % e2.intValue());:}
+|  NUMERO:n {:RESULT=n;:}
+|  LPAREN expr:e RPAREN {:RESULT=e;:} ;

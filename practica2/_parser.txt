@@ -1,0 +1,90 @@
+import java.io.*;
+import java.lang.*;
+import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.*;
+
+action code{:
+void print(String msj)
+   {System.out.println(msj);}
+:}
+
+parser code {:
+    public void report_error(String message, Object info) {
+       	StringBuffer m = new StringBuffer("Error");
+		System.out.println("Mensaje: "+message);
+		System.out.println("info: "+info.toString());
+		if(info instanceof java_cup.runtime.Symbol) {
+			java_cup.runtime.Symbol s=((java_cup.runtime.Symbol)info);
+			/* Comprueba si el numero de línea es mayor o igual que cero */
+			if(s.left >= 0) {
+				m.append(" en linea "+(s.left+1));
+				/*Comprueba si el numero de columna es mayoro igual que cero */
+				if (s.right >= 0)
+					m.append(", y columna "+(s.right+1));
+			}
+		}
+		m.append(" : "+message);
+		System.err.println(m);
+    }
+    public void report_fatal_error(String message, Object info) {
+       	report_error(message, info);
+		System.exit(1);
+    }
+
+public void conversion(String a, String b, int n){
+
+	int c=0,d=0;
+	//System.out.print(n+" ");
+	String r = " "+n+" ";
+	if (a=="Km"){ c=6; interfaz.rotular("Km"); }
+	else if (a=="Hm"){ c=5; interfaz.rotular("Hm"); }
+	else if (a=="Dm"){ c=4; interfaz.rotular("Dm"); }
+	else if (a=="m"){ c=3; interfaz.rotular("m"); }
+	else if (a=="dm"){ c=2; interfaz.rotular("dm"); }
+	else if (a=="cm"){ c=1; interfaz.rotular("cm"); }
+	else if (a=="mm"){ c=0; interfaz.rotular("mm"); }
+
+	if (b=="Km") d=6;
+	else if (b=="Hm") d=5;
+	else if (b=="Dm") d=4;
+	else if (b=="m") d=3;
+	else if (b=="dm") d=2;
+	else if (b=="cm") d=1;
+	else if (b=="mm") d=0;
+
+	//System.out.print(" son "+n*Math.pow(10,c-d)+" ");
+	r = r + " son "+n*Math.pow(10,c-d)+" ";
+	interfaz.rotular(r);
+
+}
+
+:};
+/*­­­ Declaración de la lista de símbolos de la gramática ­­­­­*/
+
+/* Produciones de flujo normal */
+terminal COMA, PUNTOCOMA, MM, DCM, CM, M, DCAM, HM, KM;
+terminal Integer NUMBER;
+non terminal Object programa, linea, expresiones, medida;
+
+/* ­­­­­­­­­­­­­­ Declaración de la gramática  ­­­­­­­­­­­ */
+programa ::= programa linea | linea;
+
+linea ::= error NUMBER medida PUNTOCOMA {: parser.report_error("revise la sintaxis",null); :} |
+	medida:m1 NUMBER:n medida:m2 PUNTOCOMA {: parser.conversion(m1.toString(),m2.toString(),n.intValue());
+	interfaz.rotular(m2.toString() + "\n"); :} |
+	expresiones medida:m1 NUMBER:n medida:m2 PUNTOCOMA
+ 	{: parser.conversion(m1.toString(),m2.toString(),n.intValue());
+	interfaz.rotular(m2.toString() + "\n"); :} ;
+
+expresiones ::= expresiones medida:m1 NUMBER:n medida:m2 COMA
+	{: parser.conversion(m1.toString(),m2.toString(),n.intValue());
+	interfaz.rotular(m2.toString() + "\n"); :} |
+	medida:m1 NUMBER:n medida:m2 COMA {: parser.conversion(m1.toString(),m2.toString(),n.intValue());
+	interfaz.rotular(m2.toString() + "\n"); :} |
+	error NUMBER medida COMA {: parser.report_error("revise las medidas en mayusculas",null); :};
+
+medida ::= KM {: RESULT="Km"; :} | HM {: RESULT="Hm"; :} | DCAM {: RESULT="Dm"; :} |
+	M {: RESULT="m"; :} | DCM {: RESULT="dm"; :} |
+	CM {: RESULT="cm"; :} | MM {: RESULT="mm"; :};

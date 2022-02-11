@@ -1,0 +1,46 @@
+import java_cup.runtime.*;
+import javax.swing.*;
+import java.util.*;
+
+%%
+%class Yylex
+%{String literal;
+  String temp_include;
+%}
+%{
+int columna=1;
+%}
+%public
+%cup
+%line
+%column
+%full
+%unicode
+%ignorecase
+%char
+
+%{
+  public String sourceFilename;
+ StringBuffer string = new StringBuffer();
+  int ultimoEstado = 0;
+ public void init(){};
+%}
+
+%eofval{
+{return new Symbol(sym.EOF, null);}
+%eofval}
+%%
+[\n]    { yychar=0;}
+[ \t\r\n\f]   {/* Espacios en blanco, se ignoran*/}
+\'      {}
+<YYINITIAL> "+" {return new Symbol(sym.MAS, yyline, yychar, yytext());}
+<YYINITIAL> "-" {return new Symbol(sym.MENOS, yyline, yychar, yytext());}
+<YYINITIAL> "*" {return new Symbol(sym.POR, yyline, yychar, yytext());}
+<YYINITIAL> "/" {return new Symbol(sym.ENTRE, yyline, yychar, yytext());}
+<YYINITIAL> "%" {return new Symbol(sym.MODULO, yyline, yychar, yytext());}
+<YYINITIAL> ";" {return new Symbol(sym.PUNTOYCOMA, yyline, yychar, yytext());}
+<YYINITIAL> "(" {return new Symbol(sym.LPAREN, yyline, yychar, yytext());}
+<YYINITIAL> ")" {return new Symbol(sym.RPAREN, yyline, yychar, yytext());}
+[0-9]+ {return new Symbol(sym.NUMERO, yyline, yychar,new Integer(yytext()));}
+. {System.out.println("error lexico en fila "+yyline +" y columna " + yychar);
+  interfaz.rotular("error lexico en fila "+yyline +" y columna " + yychar); }
