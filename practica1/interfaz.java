@@ -2,7 +2,7 @@ import java.io.*;
 import javax.swing.*;
 /**
  *
- * @author HOME
+ * @author 
  */
 public class interfaz extends javax.swing.JFrame {
 

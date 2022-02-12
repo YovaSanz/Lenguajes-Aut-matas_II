@@ -5,7 +5,6 @@ import analizadorLexico.*;
 import inter.*;
 
 
-
 public class Ent {
     private Hashtable tabla;
     protected Ent ant;

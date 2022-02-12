@@ -3,7 +3,6 @@ package simbolos;
 import analizadorLexico.*;
 
 
-
 public class Tipo extends Palabra{
     public int anchura = 0;
     public Tipo(String s, int etiqueta, int w) { super(s, etiqueta); anchura = w; }

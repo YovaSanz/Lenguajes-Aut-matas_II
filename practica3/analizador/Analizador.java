@@ -7,7 +7,6 @@ import inter.*;
 import symbols.Arreglo;
 
 
-
 public class Analizador {
 
     private AnalizadorLexico lex;

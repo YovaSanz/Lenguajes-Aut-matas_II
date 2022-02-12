@@ -32,3 +32,8 @@ Actividad:	Construcción de un Front End
 
 En esta actividad realizara la primera etapa del proceso de compilación conocida como análisis o front end de un traductor utilizando el lenguaje de programación  programación java.
 
+
+## Practica 6. Construcción de un compilador orientado a objetos
+Actividad	Construcción de un compilador orientado a objetos
+
+En esta actividad realizara un compilador/interprete sencillo orientado a objeto utilizando el lenguaje de programación java.
